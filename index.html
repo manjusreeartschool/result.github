@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Result Portal</title>
+<style>
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f4f9;
+}
+header {
+  background: #123c69;
+  color: white;
+  text-align: center;
+  padding: 25px 10px;
+}
+header h1 { margin: 0; }
+.container {
+  max-width: 600px;
+  margin: 35px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px #ccc;
+}
+h2 {
+  text-align: center;
+  color: #123c69;
+}
+input {
+  width: 100%;
+  padding: 13px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+button {
+  width: 100%;
+  padding: 13px;
+  background: #123c69;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+button:hover { background: #2065a5; }
+#result {
+  display: none;
+  margin-top: 25px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+th {
+  background: #123c69;
+  color: white;
+}
+.status {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 15px;
+}
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+@media print {
+  header, .search, footer, .print-btn {
+    display: none;
+  }
+  body { background: white; }
+  .container { box-shadow: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ONLINE RESULT PORTAL</h1>
+  <p>Examination Result 2026</p>
+</header>
+
+<div class="container">
+  <div class="search">
+    <h2>Check Your Result</h2>
+    <input type="text" id="roll"
+      placeholder="Enter Roll Number">
+    <button onclick="showResult()">Search Result</button>
+  </div>
+
+  <div id="result">
+    <h2>STUDENT MARKSHEET</h2>
+    <p><b>Name:</b> <span id="name"></span></p>
+    <p><b>Roll No:</b> <span id="rollno"></span></p>
+    <p><b>Class:</b> <span id="class"></span></p>
+
+    <table>
+      <tr>
+        <th>Subject</th>
+        <th>Full Marks</th>
+        <th>Obtained</th>
+      </tr>
+      <tbody id="marks"></tbody>
+    </table>
+
+    <p><b>Total Marks:</b> <span id="total"></span></p>
+    <p><b>Percentage:</b> <span id="percentage"></span>%</p>
+    <div class="status" id="status"></div>
+
+    <button class="print-btn" onclick="window.print()">
+      Print Marksheet
+    </button>
+  </div>
+</div>
+
+<footer>
+  © 2026 Online Result Portal
+</footer>
+
+<script>
+// DEMO STUDENT DATA
+const students = {
+  "101": {
+    name: "Rahul Das",
+    class: "Class 10",
+    subjects: [
+      ["English", 100, 78],
+      ["Mathematics", 100, 85],
+      ["Science", 100, 90],
+      ["Social Science", 100, 76],
+      ["Computer", 100, 88]
+    ]
+  },
+  "102": {
+    name: "Priya Das",
+    class: "Class 10",
+    subjects: [
+      ["English", 100, 85],
+      ["Mathematics", 100, 92],
+      ["Science", 100, 89],
+      ["Social Science", 100, 82],
+      ["Computer", 100, 95]
+    ]
+  }
+};
+
+function showResult() {
+  let roll = document.getElementById("roll").value.trim();
+  let student = students[roll];
+
+  if (!student) {
+    alert("Result not found! Check your roll number.");
+    document.getElementById("result").style.display = "none";
+    return;
+  }
+
+  document.getElementById("name").textContent = student.name;
+  document.getElementById("rollno").textContent = roll;
+  document.getElementById("class").textContent = student.class;
+
+  let total = 0;
+  let full = 0;
+  let html = "";
+  let passed = true;
+
+  student.subjects.forEach(subject => {
+    html += `<tr>
+      <td>${subject[0]}</td>
+      <td>${subject[1]}</td>
+      <td>${subject[2]}</td>
+    </tr>`;
+
+    total += subject[2];
+    full += subject[1];
+
+    if (subject[2] < 33) passed = false;
+  });
+
+  document.getElementById("marks").innerHTML = html;
+  document.getElementById("total").textContent =
+    total + " / " + full;
+
+  let percentage = (total / full * 100).toFixed(2);
+  document.getElementById("percentage").textContent = percentage;
+
+  document.getElementById("status").textContent =
+    passed ? "PASS" : "FAIL";
+
+  document.getElementById("status").style.color =
+    passed ? "green" : "red";
+
+  document.getElementById("result").style.display = "block";
+}
+</script>
+</body>
+</html>
